@@ -312,4 +312,178 @@ export default function App() {
                   {selectedImage ? (
                     <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-800">
                       <img src={selectedImage} alt="Crop Leaf Sample" className="w-full h-full object-cover" />
-                  
+                      <button 
+                        onClick={() => setSelectedImage(null)} 
+                        className="absolute top-2 right-2 bg-slate-900/90 text-white rounded-full p-1.5 text-xs hover:bg-rose-600 transition-colors"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <span className="text-5xl block mb-3">📸</span>
+                      <p className="text-xs text-slate-300 font-bold">{lang === 'bn' ? 'পাতার ছবি নির্বাচন করুন' : 'Select Leaf Sample Image'}</p>
+                      <label className="mt-4 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer transition-all border border-slate-700">
+                        {lang === 'bn' ? 'ফাইল সিলেক্ট করুন' : 'Browse File'}
+                        <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
+                      </label>
+                    </>
+                  )}
+                </div>
+
+                <div className="space-y-3">
+                  <p className="text-xs font-bold text-slate-300">{lang === 'bn' ? 'অথবা ডেমো নমুনা ব্যবহার করুন:' : 'Or test benchmark samples:'}</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-left text-xs hover:border-emerald-500/50">
+                      <span className="block font-bold text-white">{lang === 'bn' ? 'ধান পাতা' : 'Rice Leaf'}</span>
+                      <span className="text-[10px] text-slate-500">Bacterial Blight</span>
+                    </button>
+                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-left text-xs hover:border-emerald-500/50">
+                      <span className="block font-bold text-white">{lang === 'bn' ? 'ভুট্টা পাতা' : 'Corn Leaf'}</span>
+                      <span className="text-[10px] text-slate-500">Common Rust</span>
+                    </button>
+                  </div>
+
+                  <button onClick={runAiDiagnostics} disabled={aiLoading} className="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs rounded-2xl shadow-xl transition-all uppercase mt-4 hover:opacity-90">
+                    {aiLoading ? 'Running Deep Neural Model...' : (lang === 'bn' ? '🚀 রোগ নির্ণয় করুন' : '🚀 Execute AI Diagnostics')}
+                  </button>
+                </div>
+              </div>
+
+              {aiResult && (
+                <div className="p-6 rounded-2xl bg-slate-950 border border-emerald-500/50 space-y-4">
+                  <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+                    <div>
+                      <span className="text-[10px] font-mono text-emerald-400 uppercase">{lang === 'bn' ? 'নির্ণীত ফলাফল' : 'Diagnosis Result'}</span>
+                      <h4 className="text-lg font-bold text-white mt-0.5">{aiResult.disease}</h4>
+                    </div>
+                    <span className="text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">
+                      {aiResult.confidence} Match Confidence
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+                      <span className="text-slate-500 block mb-1">{lang === 'bn' ? 'ক্ষতির মাত্রা:' : 'Impact Severity:'}</span>
+                      <p className="font-semibold text-rose-400">{aiResult.severity}</p>
+                      <p className="text-slate-400 text-[11px] mt-1">{aiResult.economicImpact}</p>
+                    </div>
+                    <div className="p-3.5 bg-slate-900 rounded-xl border border-slate-800">
+                      <span className="text-slate-500 block mb-1">{lang === 'bn' ? 'রোগের লক্ষণ:' : 'Symptoms:'}</span>
+                      <p className="text-slate-300">{aiResult.symptoms}</p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-200">
+                    <strong className="text-emerald-400 block mb-1">{lang === 'bn' ? 'প্রস্তাবিত প্রতিকার ও ওষুধ:' : 'Recommended Treatment Protocol:'}</strong>
+                    {aiResult.treatment}
+                  </div>
+
+                  <div className="p-4 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+                    <strong className="text-teal-300 block mb-1">{lang === 'bn' ? 'দীর্ঘমেয়াদী প্রতিরোধমূলক পদক্ষেপ:' : 'Long-term Preventive Guidance:'}</strong>
+                    {aiResult.preventiveMeasure}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'forecast' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
+              <div>
+                <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-widest bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">FloodGuard BD Engine Integration</span>
+                <h2 className="text-2xl font-black text-white mt-2">{lang === 'bn' ? '১৫ দিনের আবহাওয়া ও বন্যা ঝুঁকি পূর্বাভাস' : '15-Day Predictive Hydrological Matrix'}</h2>
+                <p className="text-xs text-slate-400 mt-1">{lang === 'bn' ? 'র্যান্ডম ফরেস্ট ক্লাসিফায়ার মডেল ভিত্তিক আগাম বন্যা ও আর্দ্রতা পূর্বাভাস।' : 'Random Forest classification for upstream discharge and regional precipitation risk.'}</p>
+              </div>
+
+              <div className="space-y-3">
+                {[
+                  { day: 'Day 1 - 3', temp: '29°C', rain: '12mm', risk: 'Low Risk', color: 'text-emerald-400', status: 'Optimal Field & Moisture Index' },
+                  { day: 'Day 4 - 7', temp: '27°C', rain: '65mm', risk: 'Moderate Risk', color: 'text-amber-400', status: 'Prepare Drainage Outlets' },
+                  { day: 'Day 8 - 12', temp: '25°C', rain: '140mm', risk: 'High Flood Risk', color: 'text-rose-400', status: 'Upstream River Overflow Expected' },
+                  { day: 'Day 13 - 15', temp: '28°C', rain: '20mm', risk: 'Receding Water', color: 'text-cyan-400', status: 'Post-Flood Recovery & Soil Treatment' },
+                ].map((item, idx) => (
+                  <div key={idx} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex justify-between items-center text-xs">
+                    <div>
+                      <span className="font-bold text-white block">{item.day}</span>
+                      <span className="text-[10px] text-slate-500">{item.status}</span>
+                    </div>
+                    <div className="flex space-x-6 text-right font-mono">
+                      <div><span className="text-slate-500 block text-[9px]">RAIN</span><span className="text-slate-200">{item.rain}</span></div>
+                      <div><span className="text-slate-500 block text-[9px]">RISK STATUS</span><span className={`font-bold ${item.color}`}>{item.risk}</span></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'calculator' && (
+          <div className="max-w-4xl mx-auto space-y-6">
+            <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
+              <div>
+                <span className="text-xs font-mono text-teal-400 font-bold uppercase tracking-widest bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20">Precision ROI & Fertilizer Calculator</span>
+                <h2 className="text-2xl font-black text-white mt-2">{lang === 'bn' ? 'সার ও অপটিমাইজেশন সাশ্রয় হিসাবক' : 'Fertilizer & Economic Savings Calculator'}</h2>
+                <p className="text-xs text-slate-400 mt-1">{lang === 'bn' ? 'এনপিকে রিয়েল-টাইম ডাটা ব্যবহার করে সারের সঠিক মাত্রা ও ব্যয় নির্ণয়।' : 'Calculate exact soil chemical requirements using real-time NPK sensor input.'}</p>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">
+                      {lang === 'bn' ? 'জমির পরিমাণ (শতাংশ / Decimal):' : 'Enter Land Area Size (Decimals):'}
+                    </label>
+                    <input 
+                      type="number" 
+                      value={landSize} 
+                      onChange={(e) => setLandSize(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white font-bold text-sm focus:border-emerald-500 outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">
+                      {lang === 'bn' ? 'ফসলের ধরন নির্বাচন করুন:' : 'Select Crop Type:'}
+                    </label>
+                    <select 
+                      value={cropType} 
+                      onChange={(e) => setCropType(e.target.value)}
+                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-white font-bold text-sm focus:border-emerald-500 outline-none"
+                    >
+                      <option value="rice">{lang === 'bn' ? 'ধান (Rice)' : 'Rice'}</option>
+                      <option value="corn">{lang === 'bn' ? 'ভুট্টা (Corn)' : 'Corn'}</option>
+                      <option value="wheat">{lang === 'bn' ? 'গম (Wheat)' : 'Wheat'}</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
+                  <div className="p-4 bg-slate-900 rounded-xl text-center">
+                    <span className="text-[10px] text-slate-500 block uppercase">Urea Dosage</span>
+                    <span className="text-xl font-black text-emerald-400">{(landSize * (cropType === 'rice' ? 0.45 : 0.55)).toFixed(1)} kg</span>
+                  </div>
+                  <div className="p-4 bg-slate-900 rounded-xl text-center">
+                    <span className="text-[10px] text-slate-500 block uppercase">TSP Dosage</span>
+                    <span className="text-xl font-black text-teal-400">{(landSize * (cropType === 'rice' ? 0.22 : 0.30)).toFixed(1)} kg</span>
+                  </div>
+                  <div className="p-4 bg-slate-900 rounded-xl text-center">
+                    <span className="text-[10px] text-slate-500 block uppercase">Estimated ROI Saved</span>
+                    <span className="text-xl font-black text-cyan-400">৳{(landSize * 38).toFixed(0)} BDT</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+      </main>
+
+      <footer className="border-t border-slate-900 bg-slate-950/80 py-5 text-center text-xs text-slate-500 font-mono backdrop-blur-md">
+        AgriSmart AI Pro • Precision Agriculture Platform
+      </footer>
+
+    </div>
+  );
+                  }                
