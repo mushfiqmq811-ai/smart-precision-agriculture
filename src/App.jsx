@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
-  const [lang, setLang] = useState('bn');
+  const [lang, setLang] = useState('en');
   const [activeTab, setActiveTab] = useState('all');
 
   // Telemetry Metrics
@@ -21,19 +21,7 @@ export default function App() {
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState(null);
 
-  // Voice Assistant State
-  const [isListening, setIsListening] = useState(false);
-  const [voiceQuery, setVoiceQuery] = useState('');
-  const [voiceReply, setVoiceReply] = useState('');
-
-  // Market Prices Data
-  const marketPrices = [
-    { crop: 'ধান (BR-28)', price: '৳১২৫০ / মন', trend: '+২.৪%', location: 'গাজীপুর' },
-    { crop: 'ভুট্টা (হাইব্রিড)', price: '৳১০৫০ / মন', trend: '+১.১%', location: 'ময়মনসিংহ' },
-    { crop: 'গম (শতাব্দী)', price: '৳১৩৮০ / মন', trend: '-০.৫%', location: 'ঢাকা' },
-    { crop: 'আলু (কার্ডিনাল)', price: '৳২৮ / কেজি', trend: '+৩.০%', location: 'বগুড়া' },
-  ];
-
+  // Real-time sensor simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setMoisture((prev) => +(prev + (Math.random() * 1.6 - 0.8)).toFixed(1));
@@ -51,7 +39,7 @@ export default function App() {
 
   const runAiDiagnostics = () => {
     if (!selectedImage) {
-      alert(lang === 'en' ? "Please upload a leaf sample first!" : "অনুগ্রহ করে একটি পাতার ছবি দিন!");
+      alert(lang === 'en' ? "Please select or upload a leaf sample first!" : "অনুগ্রহ করে একটি পাতার ছবি নির্বাচন করুন!");
       return;
     }
     setAiLoading(true);
@@ -60,28 +48,13 @@ export default function App() {
     setTimeout(() => {
       setAiLoading(false);
       setAiResult({
-        disease: lang === 'en' ? 'Bacterial Leaf Blight' : 'ব্যাকটেরিয়াল লিফ ব্লাইট',
+        disease: lang === 'en' ? 'Bacterial Leaf Blight' : 'ব্যাকটেরিয়াল লিফ ব্লাইট (Leaf Blight)',
         confidence: '99.6% Match',
-        severity: lang === 'en' ? 'Stage 2 — Moderate' : 'দ্বিতীয় পর্যায় — মাঝারি ঝুঁকি',
+        severity: lang === 'en' ? 'Stage 2 — Moderate Threat' : 'দ্বিতীয় পর্যায় — মাঝারি ঝুঁকি',
         treatment: lang === 'en' ? 'Apply Copper Hydroxide (2g/L water) and drain excess water.' : 'কপার হাইড্রক্সাইড স্প্রে করুন এবং ক্ষেতের অতিরিক্ত পানি নিষ্কাশন করুন।',
-        roiProtection: '৳২২,৫০০',
+        roiProtection: '$2,450 / Acre Saved',
       });
-    }, 2000);
-  };
-
-  const handleVoiceInput = () => {
-    setIsListening(true);
-    setVoiceQuery('আজকে সেচ দেওয়ার দরকার আছে?');
-    setVoiceReply('');
-
-    setTimeout(() => {
-      setIsListening(false);
-      setVoiceReply('মাটির আর্দ্রতা বর্তমানে ৫২.৪% যা আদর্শ। আগামী ২৪ ঘণ্টায় সেচের প্রয়োজন নেই।');
-    }, 2500);
-  };
-
-  const printReport = () => {
-    window.print();
+    }, 1800);
   };
 
   return (
@@ -102,25 +75,27 @@ export default function App() {
               </div>
               <div>
                 <h1 className="font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-purple-400 text-xl tracking-tight">
-                  AgriNexus <span className="text-white text-[10px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 font-mono">v5.0 PRO</span>
+                  AgriNexus <span className="text-white text-[10px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 font-mono">AI PRIME v4.0</span>
                 </h1>
-                <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">AI & Autonomous Agritech Platform</p>
+                <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">Autonomous Agritech Platform</p>
               </div>
             </div>
 
-            <button onClick={() => setLang(lang === 'en' ? 'bn' : 'en')} className="md:hidden px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 text-cyan-400 border border-slate-800">
-              🌐 {lang === 'en' ? 'BN' : 'BNG'}
+            <button
+              onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
+              className="md:hidden px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 text-cyan-400 border border-slate-800"
+            >
+              🌐 {lang === 'en' ? 'BN' : 'EN'}
             </button>
           </div>
 
-          {/* Nav Tabs */}
+          {/* Navigation Tabs */}
           <div className="flex items-center space-x-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             {[
-              { id: 'all', label: '⚡ ওভারভিউ' },
-              { id: 'voice', label: '🎙️ ভয়েস এআই' },
-              { id: 'market', label: '📈 বাজারদর' },
-              { id: 'ailab', label: '🧬 রোগ নির্ণয়' },
-              { id: 'drone', label: '🛸 রাডার ও ড্রোন' },
+              { id: 'all', label: lang === 'en' ? '⚡ Command Center' : '⚡ কমান্ড সেন্টার' },
+              { id: 'iot', label: lang === 'en' ? '📡 IoT Telemetry' : '📡 টেলিমোট্রি' },
+              { id: 'ailab', label: lang === 'en' ? '🧬 AI Neural Lab' : '🧬 এআই রোগ নির্ণয়' },
+              { id: 'drone', label: lang === 'en' ? '🛸 Drone Patrol' : '🛸 ড্রোন রাডার' },
             ].map((tab) => (
               <button
                 key={tab.id}
@@ -135,7 +110,10 @@ export default function App() {
               </button>
             ))}
 
-            <button onClick={() => setLang(lang === 'en' ? 'bn' : 'en')} className="hidden md:block px-4 py-2 rounded-2xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800">
+            <button
+              onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
+              className="hidden md:block px-4 py-2 rounded-2xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 transition-all"
+            >
               🌐 {lang === 'en' ? 'বাংলা' : 'English'}
             </button>
           </div>
@@ -143,176 +121,250 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-10 relative z-10">
 
-        {/* FEATURE: VOICE-GUIDED AI ASSISTANT */}
-        {(activeTab === 'all' || activeTab === 'voice') && (
-          <section className="p-8 rounded-3xl bg-slate-900/70 border border-cyan-500/30 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
-              <div className="space-y-3 max-w-xl">
-                <span className="text-[10px] font-mono text-cyan-400 font-extrabold uppercase tracking-widest bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30">
-                  Voice-Guided Neural Assistant
-                </span>
-                <h2 className="text-2xl font-black text-white">কৃষি ভয়েস সহকারী (Voice Assistant)</h2>
-                <p className="text-xs text-slate-400">মাইক্রোফোনে চেপে সরাসরি আপনার ক্ষেতের বা ফসলের যেকোনো প্রশ্ন করুন।</p>
-                
-                {voiceQuery && (
-                  <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 space-y-2">
-                    <p className="text-xs text-cyan-400 font-mono">🗣️ আপনি বলেছেন: "{voiceQuery}"</p>
-                    {voiceReply && <p className="text-xs text-emerald-400 font-bold">🤖 এআই উত্তর: {voiceReply}</p>}
-                  </div>
-                )}
-              </div>
-
-              <div className="flex flex-col items-center justify-center">
-                <button
-                  onClick={handleVoiceInput}
-                  className={`w-24 h-24 rounded-full flex items-center justify-center text-3xl shadow-2xl transition-all duration-300 ${
-                    isListening
-                      ? 'bg-rose-500 text-white animate-pulse shadow-rose-500/50 scale-110'
-                      : 'bg-gradient-to-tr from-emerald-500 via-cyan-500 to-purple-600 text-slate-950 hover:scale-105 shadow-cyan-500/30'
-                  }`}
-                >
-                  🎙️
-                </button>
-                <span className="text-[10px] font-mono text-slate-400 mt-3">
-                  {isListening ? 'শুনছি... কথা বলুন' : 'কথা বলতে বোতামে চাপুন'}
-                </span>
-              </div>
-            </div>
-          </section>
-        )}
-        
-        {/* FEATURE: LIVE MANDI / MARKET PRICES */}
-        {(activeTab === 'all' || activeTab === 'market') && (
+        {/* SECTION 1: IOT TELEMETRY & METRICS */}
+        {(activeTab === 'all' || activeTab === 'iot') && (
           <section className="space-y-4">
             <div className="flex justify-between items-center">
               <div>
                 <span className="text-[10px] font-mono text-emerald-400 font-extrabold uppercase tracking-widest bg-emerald-500/10 px-3 py-1.5 rounded-full border border-emerald-500/30">
-                  Real-time Mandi Feed
+                  Live Sensor Stream
                 </span>
-                <h2 className="text-2xl font-black text-white mt-1">দেশের লাইভ পাইকারি বাজারদর</h2>
+                <h2 className="text-2xl font-black text-white mt-1">
+                  {lang === 'en' ? 'Field Telemetry & Soil Health' : 'মাঠের তথ্য ও মৃত্তিকা স্বাস্থ্য'}
+                </h2>
               </div>
+              <span className="flex items-center space-x-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>SYSTEM ONLINE</span>
+              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {marketPrices.map((item, idx) => (
-                <div key={idx} className="p-5 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/40 transition-all backdrop-blur-md">
-                  <div className="flex justify-between items-start text-xs text-slate-400">
-                    <span className="font-mono bg-slate-950 px-2 py-1 rounded-lg border border-slate-800">{item.location}</span>
-                    <span className="text-emerald-400 font-bold">{item.trend}</span>
-                  </div>
-                  <h3 className="text-lg font-extrabold text-white mt-3">{item.crop}</h3>
-                  <p className="text-2xl font-black text-cyan-400 font-mono mt-1">{item.price}</p>
+              
+              {/* Moisture */}
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800/80 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                <div className="flex justify-between text-xs font-mono text-slate-400">
+                  <span>SOIL MOISTURE</span>
+                  <span className="text-cyan-400 font-bold">OPTIMAL</span>
                 </div>
-              ))}
+                <div className="mt-4 flex items-baseline space-x-2">
+                  <span className="text-4xl font-black text-white font-mono">{moisture}%</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+                  <div className="bg-gradient-to-r from-cyan-500 to-emerald-400 h-full transition-all duration-500" style={{ width: `${moisture}%` }}></div>
+                </div>
+              </div>
+
+              {/* Temperature */}
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800/80 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                <div className="flex justify-between text-xs font-mono text-slate-400">
+                  <span>AMBIENT TEMP</span>
+                  <span className="text-amber-400 font-bold">NORMAL</span>
+                </div>
+                <div className="mt-4 flex items-baseline space-x-2">
+                  <span className="text-4xl font-black text-white font-mono">{temp}°C</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+                  <div className="bg-gradient-to-r from-amber-500 to-rose-400 h-full transition-all duration-500" style={{ width: `${(temp / 40) * 100}%` }}></div>
+                </div>
+              </div>
+
+              {/* Soil pH */}
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800/80 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                <div className="flex justify-between text-xs font-mono text-slate-400">
+                  <span>SOIL pH LEVEL</span>
+                  <span className="text-emerald-400 font-bold">BALANCED</span>
+                </div>
+                <div className="mt-4 flex items-baseline space-x-2">
+                  <span className="text-4xl font-black text-white font-mono">{ph}</span>
+                </div>
+                <div className="w-full bg-slate-800 h-2 rounded-full mt-4 overflow-hidden">
+                  <div className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full" style={{ width: `${(ph / 14) * 100}%` }}></div>
+                </div>
+              </div>
+
+              {/* N-P-K Levels */}
+              <div className="p-6 rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/90 border border-slate-800/80 shadow-2xl relative overflow-hidden backdrop-blur-md">
+                <div className="flex justify-between text-xs font-mono text-slate-400">
+                  <span>NPK NUTRIENTS</span>
+                  <span className="text-purple-400 font-bold">PPM</span>
+                </div>
+                <div className="mt-3 grid grid-cols-3 gap-1 text-center font-mono">
+                  <div className="p-1.5 bg-slate-950 rounded-xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 block">N</span>
+                    <span className="text-xs font-bold text-emerald-400">{npk.n}</span>
+                  </div>
+                  <div className="p-1.5 bg-slate-950 rounded-xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 block">P</span>
+                    <span className="text-xs font-bold text-cyan-400">{npk.p}</span>
+                  </div>
+                  <div className="p-1.5 bg-slate-950 rounded-xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 block">K</span>
+                    <span className="text-xs font-bold text-purple-400">{npk.k}</span>
+                  </div>
+                </div>
+              </div>
+
             </div>
           </section>
         )}
 
-        {/* FEATURE: DIAGNOSTIC LAB WITH PRINT/EXPORT */}
+        {/* SECTION 2: AI NEURAL LAB */}
         {(activeTab === 'all' || activeTab === 'ailab') && (
           <section className="max-w-4xl mx-auto space-y-6">
             <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
-              <div className="flex justify-between items-center">
-                <div>
-                  <span className="text-xs font-mono text-purple-400 font-bold uppercase tracking-widest bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
-                    Computer Vision Diagnostics
-                  </span>
-                  <h2 className="text-2xl font-black text-white mt-1">নিউরাল রোগ নির্ণয় ল্যাব</h2>
-                </div>
-                {aiResult && (
-                  <button onClick={printReport} className="px-4 py-2 rounded-xl bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 text-xs font-bold hover:bg-cyan-500/30 transition-all">
-                    📄 ডাউনলোড/প্রিন্ট রিপোর্ট
-                  </button>
-                )}
+              <div>
+                <span className="text-xs font-mono text-purple-400 font-bold uppercase tracking-widest bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                  Computer Vision Diagnostics
+                </span>
+                <h2 className="text-2xl font-black text-white mt-1">
+                  {lang === 'en' ? 'AI Disease Diagnostics' : 'কৃত্রিম বুদ্ধিমত্তা দিয়ে রোগ নির্ণয়'}
+                </h2>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                
+                {/* Upload Area */}
                 <div className="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-3xl p-6 text-center bg-slate-950/70 transition-all flex flex-col items-center justify-center min-h-[200px]">
                   {selectedImage ? (
                     <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-slate-800">
                       <img src={selectedImage} alt="Sample" className="w-full h-full object-cover" />
-                      <button onClick={() => setSelectedImage(null)} className="absolute top-2 right-2 bg-slate-900/90 text-white rounded-full p-2 text-xs">✕</button>
+                      <button
+                        onClick={() => setSelectedImage(null)}
+                        className="absolute top-2 right-2 bg-slate-900/90 text-white rounded-full p-2 text-xs"
+                      >
+                        ✕
+                      </button>
                     </div>
                   ) : (
                     <>
                       <span className="text-4xl block mb-2">📸</span>
-                      <p className="text-xs text-slate-300 font-bold">আক্রান্ত পাতার ছবি আপলোড করুন</p>
-                      <label className="mt-4 px-5 py-2 bg-slate-800 text-slate-200 font-bold text-xs rounded-xl cursor-pointer border border-slate-700">
-                        ফাইল বাছুন
+                      <p className="text-xs text-slate-300 font-bold">
+                        {lang === 'en' ? 'Upload crop leaf image' : 'আক্রান্ত পাতার ছবি আপলোড করুন'}
+                      </p>
+                      <label className="mt-4 px-5 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer border border-slate-700 transition-all">
+                        {lang === 'en' ? 'Choose File' : 'ফাইল বাছুন'}
                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                       </label>
                     </>
                   )}
                 </div>
 
+                {/* Demo Presets & Run Action */}
                 <div className="space-y-4">
-                  <p className="text-xs font-bold text-slate-300">ডেমো নমুনা দিয়ে পরীক্ষা করুন:</p>
+                  <p className="text-xs font-bold text-slate-300">
+                    {lang === 'en' ? 'Or try with sample presets:' : 'অথবা নিচের স্যাম্পল ডেমো চেষ্টা করুন:'}
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
-                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50">
-                      <span className="block font-bold text-xs text-white">ধানের পাতা</span>
-                      <span className="text-[9px] text-slate-500 font-mono">লিফ ব্লাইট</span>
+                    <button
+                      onClick={() => {
+                        setSelectedImage('https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=600&q=80');
+                        setAiResult(null);
+                      }}
+                      className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50 transition-all"
+                    >
+                      <span className="block font-bold text-xs text-white">Rice Leaf Sample</span>
+                      <span className="text-[9px] text-slate-500 font-mono">Bacterial Blight</span>
                     </button>
-                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50">
-                      <span className="block font-bold text-xs text-white">ভুট্টার পাতা</span>
-                      <span className="text-[9px] text-slate-500 font-mono">কমন রাস্ট</span>
+
+                    <button
+                      onClick={() => {
+                        setSelectedImage('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80');
+                        setAiResult(null);
+                      }}
+                      className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50 transition-all"
+                    >
+                      <span className="block font-bold text-xs text-white">Corn Leaf Sample</span>
+                      <span className="text-[9px] text-slate-500 font-mono">Common Rust</span>
                     </button>
                   </div>
 
-                  <button onClick={runAiDiagnostics} disabled={aiLoading} className="w-full py-4 bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500 text-slate-950 font-black text-xs rounded-2xl shadow-xl uppercase tracking-wider">
-                    {aiLoading ? 'এআই বিশ্লেষণ চলছে...' : '🚀 এআই ডায়াগনস্টিক চালান'}
+                  <button
+                    onClick={runAiDiagnostics}
+                    disabled={aiLoading}
+                    className="w-full py-4 bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500 text-slate-950 font-black text-xs rounded-2xl shadow-xl shadow-cyan-500/20 hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-wider"
+                  >
+                    {aiLoading ? (lang === 'en' ? 'Analyzing Neural Patterns...' : 'এআই বিশ্লেষণ চলছে...') : (lang === 'en' ? '🚀 Run AI Diagnostic' : '🚀 এআই বিশ্লেষণ চালান')}
                   </button>
                 </div>
+
               </div>
 
+              {/* Diagnostic Results */}
               {aiResult && (
-                <div className="p-6 rounded-2xl bg-slate-950 border border-cyan-500/50 space-y-4">
+                <div className="p-6 rounded-2xl bg-slate-950 border border-cyan-500/50 space-y-4 animate-fade-in">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-3">
                     <h4 className="text-base font-bold text-white">{aiResult.disease}</h4>
                     <span className="text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full">{aiResult.confidence}</span>
                   </div>
                   <div className="text-xs space-y-2 text-slate-300">
-                    <p><strong className="text-rose-400">ঝুঁকির মাত্রা:</strong> {aiResult.severity}</p>
-                    <p><strong className="text-emerald-400">সংরক্ষিত সম্ভাব্য ফসল:</strong> {aiResult.roiProtection}</p>
+                    <p><strong className="text-rose-400">Threat Level:</strong> {aiResult.severity}</p>
+                    <p><strong className="text-emerald-400">Yield Protection:</strong> {aiResult.roiProtection}</p>
                     <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">
-                      <strong>প্রতিকার:</strong> {aiResult.treatment}
+                      <strong>Prescription:</strong> {aiResult.treatment}
                     </div>
                   </div>
                 </div>
               )}
+
             </div>
           </section>
         )}
-
-        {/* FEATURE: DRONE RADAR */}
+        
+        {/* SECTION 3: DRONE RADAR & CONTROL */}
         {(activeTab === 'all' || activeTab === 'drone') && (
           <section className="p-6 md:p-8 rounded-3xl bg-slate-900/60 border border-cyan-500/30 shadow-2xl backdrop-blur-xl">
             <div className="flex flex-col lg:flex-row justify-between items-center gap-6">
               <div className="space-y-4">
                 <span className="text-[10px] font-mono text-cyan-400 font-extrabold uppercase tracking-widest bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30">
-                  Autonomous Drone System
+                  Autonomous Drone Patrol
                 </span>
-                <h2 className="text-2xl font-black text-white">লাইভ ড্রোন থার্মাল সার্ভেইল্যান্স</h2>
+                <h2 className="text-2xl font-black text-white">
+                  {lang === 'en' ? 'Drone Telemetry & Irrigation Controls' : 'ড্রোন রাডার ও অটো সেচ নিয়ন্ত্রণ'}
+                </h2>
+
                 <div className="grid grid-cols-2 gap-3 text-xs font-mono">
                   <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800">
-                    <span className="text-slate-500 block text-[9px]">STATUS</span>
+                    <span className="text-slate-500 block text-[9px]">PATROL STATUS</span>
                     <span className="text-emerald-400 font-bold">{droneStatus}</span>
                   </div>
                   <div className="p-3 bg-slate-950 rounded-2xl border border-slate-800">
-                    <span className="text-slate-500 block text-[9px]">FIELD HEAT</span>
+                    <span className="text-slate-500 block text-[9px]">THERMAL READOUT</span>
                     <span className="text-cyan-400 font-bold">{droneThermal}</span>
                   </div>
                 </div>
+
+                <div className="flex items-center space-x-4 pt-2">
+                  <button
+                    onClick={() => setPumpActive(!pumpActive)}
+                    className={`px-5 py-2.5 rounded-xl font-bold text-xs transition-all ${
+                      pumpActive
+                        ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/30'
+                        : 'bg-emerald-500 text-slate-950 shadow-lg shadow-emerald-500/30'
+                    }`}
+                  >
+                    {pumpActive ? '🔴 Stop Water Pump' : '💧 Start Water Pump'}
+                  </button>
+
+                  <button
+                    onClick={() => setAutoMode(!autoMode)}
+                    className="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-mono font-bold border border-slate-700"
+                  >
+                    AUTO: {autoMode ? 'ENABLED' : 'MANUAL'}
+                  </button>
+                </div>
               </div>
 
-              <div className="w-64 h-64 bg-slate-950 rounded-3xl border border-cyan-500/40 relative flex items-center justify-center overflow-hidden">
+              {/* Animated Radar */}
+              <div className="w-64 h-64 bg-slate-950 rounded-3xl border border-cyan-500/40 relative flex items-center justify-center overflow-hidden shadow-2xl shadow-cyan-500/10">
                 <div className="absolute w-48 h-48 rounded-full border border-cyan-500/20"></div>
                 <div className="absolute w-32 h-32 rounded-full border border-cyan-500/30"></div>
                 <div className="absolute w-24 h-24 top-8 right-8 bg-gradient-to-tr from-cyan-500/30 to-transparent rounded-tl-full animate-radar origin-bottom-left"></div>
                 <div className="absolute top-16 left-20 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
-                <span className="absolute bottom-3 text-[9px] font-mono text-cyan-400 font-bold">RADAR ACTIVE</span>
+                <span className="absolute bottom-3 text-[9px] font-mono text-cyan-400 font-bold">LIVE RADAR ACTIVE</span>
               </div>
             </div>
           </section>
@@ -320,10 +372,11 @@ export default function App() {
 
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-slate-900 bg-[#060a17] py-6 text-center text-xs text-slate-500 font-mono">
-        AgriNexus AI Prime v5.0 • Enterprise Agritech Platform
+        AgriNexus AI Prime v4.0 • Autonomous Agritech Command Platform
       </footer>
 
     </div>
   );
-        }
+}
