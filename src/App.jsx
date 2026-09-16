@@ -1,30 +1,33 @@
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
-  const [lang, setLang] = useState('en'); // Default language English
+  const [lang, setLang] = useState('en');
   const [activeTab, setActiveTab] = useState('all');
 
-  // Real-time Telemetry State
-  const [moisture, setMoisture] = useState(48.5);
-  const [temp, setTemp] = useState(28.4);
-  const [ph, setPh] = useState(6.7);
-  const [npk] = useState({ n: 145, p: 62, k: 210 });
+  // Telemetry Metrics
+  const [moisture, setMoisture] = useState(52.4);
+  const [temp, setTemp] = useState(27.8);
+  const [ph, setPh] = useState(6.6);
+  const [npk] = useState({ n: 148, p: 65, k: 218 });
 
-  // Actuator States
+  // Drone Radar & Controls
+  const [droneStatus, setDroneStatus] = useState('Patrolling Zone Alpha');
+  const [droneThermal, setDroneThermal] = useState('Optimal (31.2°C Field Heat)');
   const [pumpActive, setPumpActive] = useState(false);
   const [autoMode, setAutoMode] = useState(true);
+
+  // Weather & Forecast
   const [weather, setWeather] = useState(null);
 
-  // AI Diagnostic States
+  // AI Diagnostic
   const [selectedImage, setSelectedImage] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState(null);
 
-  // Calculator States
+  // Profit Calculator
   const [landSize, setLandSize] = useState(33);
   const [cropType, setCropType] = useState('rice');
 
-  // Live Weather API Fetching
   useEffect(() => {
     fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current_weather=true')
       .then((res) => res.json())
@@ -32,12 +35,11 @@ export default function App() {
       .catch(() => setWeather(null));
   }, []);
 
-  // Dynamic Telemetry Simulator
   useEffect(() => {
     const interval = setInterval(() => {
-      setMoisture((prev) => +(prev + (Math.random() * 1.4 - 0.7)).toFixed(1));
+      setMoisture((prev) => +(prev + (Math.random() * 1.6 - 0.8)).toFixed(1));
       setTemp((prev) => +(prev + (Math.random() * 0.4 - 0.2)).toFixed(1));
-    }, 2500);
+    }, 2000);
     return () => clearInterval(interval);
   }, []);
 
@@ -51,7 +53,7 @@ export default function App() {
 
   const runAiDiagnostics = () => {
     if (!selectedImage) {
-      alert(lang === 'en' ? "Please upload a crop leaf image first!" : "অনুগ্রহ করে আগে একটি পাতার ছবি আপলোড করুন!");
+      alert(lang === 'en' ? "Please upload a leaf sample first!" : "অনুগ্রহ করে একটি পাতার ছবি দিন!");
       return;
     }
     setAiLoading(true);
@@ -60,70 +62,70 @@ export default function App() {
     setTimeout(() => {
       setAiLoading(false);
       setAiResult({
-        disease: lang === 'en' ? 'Bacterial Leaf Blight (Xanthomonas oryzae)' : 'ব্যাকটেরিয়াল লিফ ব্লাইট (Bacterial Leaf Blight)',
-        confidence: '99.2%',
-        severity: lang === 'en' ? 'Stage 2 — Moderate Infection Risk' : 'দ্বিতীয় পর্যায় — মাঝারি সংক্রমণ ঝুঁকি',
-        symptoms: lang === 'en' 
-          ? 'Yellowish-orange wavy stripes along leaf margins, wilting, and reduced photosynthesis capacity.' 
-          : 'পাতার কিনারা তরঙ্গায়িত হলুদ-কমলা হওয়া, ঢলে পড়া ও সালোকসংশ্লেষণ মারাত্মকভাবে হ্রাস।',
-        treatment: lang === 'en' 
-          ? 'Spray Copper Hydroxide (2g/L) or Streptomycin Sulfate. Drain excess stagnant water immediately.' 
-          : 'কপার হাইড্রক্সাইড (২ গ্রাম/লিটার) বা স্ট্রেপ্টোমাইসিন সালফেট স্প্রে করুন। জমিতে জমা পানি নিষ্কাশন করুন।',
-        yieldImpact: lang === 'en' ? 'Potential 15-20% yield drop if untreated within 48h.' : '৪৮ ঘণ্টার মধ্যে ব্যবস্থা না নিলে ১৫-২০% ফলন হ্রাস পেতে পারে।',
+        disease: lang === 'en' ? 'Bacterial Leaf Blight (Xanthomonas oryzae)' : 'ব্যাকটেরিয়াল লিফ ব্লাইট',
+        confidence: '99.6% Match',
+        severity: lang === 'en' ? 'Stage 2 — Moderate Infection' : 'দ্বিতীয় পর্যায় — মাঝারি ঝুঁকি',
+        symptoms: lang === 'en' ? 'Lesions on leaf margins, systemic wilting, reduced photosynthesis.' : 'পাতার কিনারা বিবর্ণ হওয়া এবং ছানি পড়া।',
+        treatment: lang === 'en' ? 'Apply Copper Hydroxide (2g/L water) or Streptomycin. Drain excess field water.' : 'কপার হাইড্রক্সাইড স্প্রে করুন এবং পানি নিষ্কাশন করুন।',
+        roiProtection: lang === 'en' ? 'Estimated Crop Yield Protected: ৳২২,৫০০' : 'রক্ষিত সম্ভাব্য ফসলের মূল্য: ৳২২,৫০০',
       });
-    }, 2000);
+    }, 2200);
   };
-  return (
-    <div className="min-h-screen bg-[#050811] text-slate-100 font-sans flex flex-col w-full overflow-x-hidden selection:bg-emerald-500 selection:text-black">
-      
-      {/* Dynamic Background Glowing Orbs */}
-      <div className="fixed -top-24 -left-24 w-96 h-96 bg-emerald-500/10 rounded-full blur-[140px] pointer-events-none animate-glow"></div>
-      <div className="fixed top-1/2 right-0 w-[500px] h-[500px] bg-cyan-500/10 rounded-full blur-[160px] pointer-events-none animate-glow"></div>
 
-      {/* Navigation Header */}
-      <header className="border-b border-slate-800/80 bg-[#070c18]/90 backdrop-blur-2xl sticky top-0 z-50">
+  return (
+    <div className="min-h-screen bg-[#030712] text-slate-100 font-sans flex flex-col w-full overflow-x-hidden selection:bg-cyan-500 selection:text-black">
+      
+      {/* Hyper Holographic Animated Backdrop */}
+      <div className="fixed -top-40 -left-40 w-[600px] h-[600px] bg-emerald-600/10 rounded-full blur-[180px] pointer-events-none animate-float"></div>
+      <div className="fixed top-1/3 -right-40 w-[650px] h-[650px] bg-cyan-600/10 rounded-full blur-[190px] pointer-events-none animate-float" style={{ animationDelay: '3s' }}></div>
+      <div className="fixed -bottom-40 left-1/3 w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[160px] pointer-events-none animate-float" style={{ animationDelay: '1.5s' }}></div>
+
+      {/* Futuristic Header */}
+      <header className="border-b border-slate-800/80 bg-[#060a17]/90 backdrop-blur-2xl sticky top-0 z-50 shadow-2xl shadow-emerald-950/20">
         <div className="max-w-7xl mx-auto px-4 py-3.5 flex flex-col md:flex-row md:items-center justify-between gap-4">
           
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl shadow-lg shadow-emerald-500/20">
-                <svg className="w-6 h-6 text-slate-950 stroke-current" fill="none" viewBox="0 0 24 24" strokeWidth="2.5">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v18m9-9H3m4.5-4.5l9 9m0-9l-9 9" />
-                </svg>
+              <div className="relative p-3 bg-gradient-to-tr from-emerald-500 via-cyan-500 to-purple-600 rounded-2xl shadow-xl shadow-cyan-500/20 group">
+                <span className="text-xl block">🛸</span>
+                <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                </span>
               </div>
               <div>
                 <div className="flex items-center space-x-2">
-                  <h1 className="font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 text-xl tracking-tight">
-                    AgriNexus <span className="text-white text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 font-mono">AI PRIME</span>
+                  <h1 className="font-black text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-300 to-purple-400 text-xl tracking-tight">
+                    AgriNexus <span className="text-white text-[10px] px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 font-mono tracking-widest">v4.0 HYPER</span>
                   </h1>
                 </div>
-                <p className="text-[10px] text-slate-400 font-mono tracking-widest uppercase">Precision IoT Telemetry & ML Engine</p>
+                <p className="text-[9px] text-slate-400 font-mono tracking-widest uppercase">Autonomous Drone & IoT Neural Matrix</p>
               </div>
             </div>
 
             <button
               onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
-              className="md:hidden px-3 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 text-emerald-400 border border-slate-800"
+              className="md:hidden px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold bg-slate-900 text-cyan-400 border border-slate-800"
             >
-              🌐 {lang === 'en' ? 'বাংলা' : 'English'}
+              🌐 {lang === 'en' ? 'BN' : 'EN'}
             </button>
           </div>
 
           {/* Navigation Controls */}
           <div className="flex items-center space-x-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
             {[
-              { id: 'all', en: '⚡ Overview', bn: '⚡ ওভারভিউ' },
-              { id: 'telemetry', en: '📊 Live Telemetry', bn: '📊 লাইভ ডাটা' },
-              { id: 'ailab', en: '🧬 AI Disease Lab', bn: '🧬 এআই ল্যাব' },
-              { id: 'forecast', en: '🔮 Hydrology & Flood', bn: '🔮 বন্যা পূর্বাভাস' },
-              { id: 'roi', en: '💰 Yield ROI', bn: '💰 সার ও বাজেট' },
+              { id: 'all', en: '⚡ Hyper Overview', bn: '⚡ ওভারভিউ' },
+              { id: 'drone', en: '🛸 Live Drone & Radar', bn: '🛸 ড্রোন ও রাডার' },
+              { id: 'telemetry', en: '📊 IoT Telemetry', bn: '📊 ডাটা ম্যাট্রিক্স' },
+              { id: 'ailab', en: '🧬 Neural Disease Lab', bn: '🧬 নিউরাল ল্যাব' },
+              { id: 'profit', en: '💎 Profit & ROI Engine', bn: '💎 মুনাফা প্রজেক্টর' },
             ].map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all duration-300 ${
+                className={`px-4 py-2 rounded-2xl text-xs font-bold whitespace-nowrap transition-all duration-300 ${
                   activeTab === tab.id
-                    ? 'bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black shadow-lg shadow-emerald-500/20'
+                    ? 'bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black shadow-lg shadow-cyan-500/25 scale-105'
                     : 'text-slate-400 bg-slate-900/80 hover:bg-slate-800/80 border border-slate-800'
                 }`}
               >
@@ -133,7 +135,7 @@ export default function App() {
 
             <button
               onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
-              className="hidden md:block px-3.5 py-2 rounded-xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-800 transition-all"
+              className="hidden md:block px-4 py-2 rounded-2xl text-xs font-mono font-bold bg-slate-900 hover:bg-slate-800 text-cyan-400 border border-slate-800 transition-all"
             >
               🌐 {lang === 'en' ? 'বাংলা' : 'English'}
             </button>
@@ -142,87 +144,107 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Dashboard Content */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-8 relative z-10">
-        
-        {/* BANGLADESH FARMER QUICK ACTION ADVISORY CARD */}
-        <section className="p-5 rounded-3xl bg-gradient-to-r from-emerald-950/40 via-slate-900/90 to-cyan-950/40 border border-emerald-500/30 shadow-2xl backdrop-blur-xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-8 opacity-10 font-black text-7xl text-emerald-400 select-none pointer-events-none">BD</div>
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex items-center space-x-4">
-              <span className="text-3xl p-3 bg-emerald-500/10 rounded-2xl border border-emerald-500/30">🌾</span>
-              <div>
-                <span className="text-[10px] font-mono text-emerald-400 font-bold uppercase tracking-widest">
-                  {lang === 'en' ? 'FARMER DIRECT ACTION ADVISORY' : 'কৃষক মাঠ পর্যায় সহায়িকা'}
-                </span>
-                <h3 className="text-lg font-bold text-white mt-0.5">
-                  {lang === 'en' ? 'Optimal Soil Hydration • Normal Conditions' : 'মাটির আর্দ্রতা চমৎকার • কোনো জরুরি সেচ প্রয়োজন নেই'}
-                </h3>
-                <p className="text-xs text-slate-400 mt-1">
-                  {lang === 'en' 
-                    ? 'Soil moisture is at 48.5%. Save groundwater by pausing pump operations for the next 18 hours.' 
-                    : 'মাটিতে আর্দ্রতা পর্যাপ্ত রয়েছে (৪৮.৫%)। আগামী ১৮ ঘণ্টা সেচ বন্ধ রেখে ভূগর্ভস্থ পানি ও বিদ্যুৎ সাশ্রয় করুন।'}
-                </p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-3 w-full md:w-auto">
-              <div className="px-4 py-2 rounded-2xl bg-slate-950/80 border border-slate-800 text-center flex-1 md:flex-none">
-                <span className="text-[9px] text-slate-500 font-mono block">LIVE PADDY RATE</span>
-                <span className="text-xs font-bold text-emerald-400">৳১,৩২০ / মণ</span>
-              </div>
-              <div className="px-4 py-2 rounded-2xl bg-slate-950/80 border border-slate-800 text-center flex-1 md:flex-none">
-                <span className="text-[9px] text-slate-500 font-mono block">RECOMMENDED DRAINAGE</span>
-                <span className="text-xs font-bold text-cyan-400">Normal</span>
-              </div>
-            </div>
-          </div>
-        </section>
+      {/* Main Dashboard Space */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 space-y-10 relative z-10">
 
-        {/* SECTION 1: LIVE TELEMETRY & GRAPH */}
+        {/* FEATURE 1: AUTONOMOUS DRONE SURVEILLANCE & RADAR */}
+        {(activeTab === 'all' || activeTab === 'drone') && (
+          <section className="p-6 md:p-8 rounded-3xl bg-slate-900/60 border border-cyan-500/30 shadow-2xl backdrop-blur-xl relative overflow-hidden group">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
+              
+              <div className="space-y-4 max-w-xl">
+                <span className="text-[10px] font-mono text-cyan-400 font-extrabold uppercase tracking-widest bg-cyan-500/10 px-3 py-1.5 rounded-full border border-cyan-500/30">
+                  Autonomous Aerial Reconnaissance
+                </span>
+                <h2 className="text-2xl md:text-3xl font-black text-white">
+                  {lang === 'en' ? 'Live Autonomous Drone & Thermal Mapping' : 'লাইভ ড্রোন নজরদারি ও থার্মাল ম্যাপিং'}
+                </h2>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {lang === 'en' 
+                    ? 'AgriNexus Sentinel-X Drone is scanning field sector 4B for crop stress, pest hot-spots, and uneven hydration zones.' 
+                    : 'আগ্রিনেক্সাস সেন্টিনেল ড্রোন মাঠের শস্যের স্বাস্থ্য ও ক্ষতিকারক পোকার উপস্থিতি পর্যবেক্ষণ করছে।'}
+                </p>
+
+                <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+                  <div className="p-3 bg-slate-950/80 rounded-2xl border border-slate-800">
+                    <span className="text-slate-500 block text-[9px]">DRONE FLIGHT STATUS</span>
+                    <span className="text-emerald-400 font-bold">{droneStatus}</span>
+                  </div>
+                  <div className="p-3 bg-slate-950/80 rounded-2xl border border-slate-800">
+                    <span className="text-slate-500 block text-[9px]">FIELD THERMAL SCORE</span>
+                    <span className="text-cyan-400 font-bold">{droneThermal}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Holographic Radar Visualizer */}
+              <div className="w-full lg:w-72 h-72 bg-slate-950/90 rounded-3xl border border-cyan-500/40 relative flex items-center justify-center overflow-hidden shadow-2xl">
+                {/* Radar Grid Circles */}
+                <div className="absolute w-56 h-56 rounded-full border border-cyan-500/20"></div>
+                <div className="absolute w-40 h-40 rounded-full border border-cyan-500/30"></div>
+                <div className="absolute w-24 h-24 rounded-full border border-cyan-500/40"></div>
+                <div className="absolute w-full h-[1px] bg-cyan-500/20"></div>
+                <div className="absolute h-full w-[1px] bg-cyan-500/20"></div>
+
+                {/* Sweeping Radar Beam */}
+                <div className="absolute w-28 h-28 top-8 right-8 bg-gradient-to-tr from-cyan-500/30 to-transparent rounded-tl-full animate-radar origin-bottom-left"></div>
+
+                {/* Target Ping Points */}
+                <div className="absolute top-16 left-20 w-3 h-3 bg-emerald-400 rounded-full animate-ping"></div>
+                <div className="absolute bottom-20 right-16 w-2.5 h-2.5 bg-rose-500 rounded-full animate-pulse"></div>
+
+                <div className="absolute bottom-3 text-center">
+                  <span className="text-[9px] font-mono text-cyan-400 uppercase tracking-widest font-bold">RADAR SWEEP ACTIVE</span>
+                </div>
+              </div>
+
+            </div>
+          </section>
+        )}
+        {/* FEATURE 2: LIVE IOT TELEMETRY MATRIX & LIVE GRAPH */}
         {(activeTab === 'all' || activeTab === 'telemetry') && (
           <section className="space-y-6">
-            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-xl">
+            <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 backdrop-blur-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-2xl">
               <div>
                 <div className="flex items-center space-x-2">
                   <span className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
                   </span>
-                  <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider">Node-Alpha-01 • ESP32 Wireless Telemetry Active</span>
+                  <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest">ESP32 Telemetry Matrix • Connected</span>
                 </div>
                 <h2 className="text-2xl font-black text-white mt-1">
-                  {lang === 'en' ? 'Live Soil & Microclimate Telemetry' : 'লাইভ মাটি ও আবহাওয়া পরিমাপ কেন্দ্র'}
+                  {lang === 'en' ? 'Live Telemetry & Sensor Analytics' : 'লাইভ সেন্সর ডাটা পরিমাপ কেন্দ্র'}
                 </h2>
               </div>
 
               <div className="flex items-center space-x-3 w-full md:w-auto">
                 <button
                   onClick={() => setAutoMode(!autoMode)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
-                    autoMode ? 'bg-teal-500/20 text-teal-300 border-teal-500/40' : 'bg-slate-800 text-slate-400 border-slate-700'
+                  className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border ${
+                    autoMode ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' : 'bg-slate-800 text-slate-400 border-slate-700'
                   }`}
                 >
-                  {lang === 'en' ? `Auto-Irrigation: ${autoMode ? 'ACTIVE' : 'OFF'}` : `স্বয়ংক্রিয় সেচ: ${autoMode ? 'চালু' : 'বন্ধ'}`}
+                  {lang === 'en' ? `Smart Valve: ${autoMode ? 'AUTO' : 'MANUAL'}` : `স্মার্ট ভালভ: ${autoMode ? 'স্বয়ংক্রিয়' : 'ম্যানুয়াল'}`}
                 </button>
                 <button
                   onClick={() => setPumpActive(!pumpActive)}
                   disabled={autoMode}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border shadow-lg ${
+                  className={`px-4 py-2.5 rounded-2xl text-xs font-bold transition-all border shadow-xl ${
                     pumpActive ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 animate-pulse' : 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
                   } ${autoMode ? 'opacity-40 cursor-not-allowed' : ''}`}
                 >
-                  {pumpActive ? (lang === 'en' ? '🔴 STOP PUMP' : '🔴 পাম্প বন্ধ') : (lang === 'en' ? '⚡ START PUMP' : '⚡ পাম্প চালু')}
+                  {pumpActive ? '🔴 STOP MOTOR' : '⚡ START MOTOR'}
                 </button>
               </div>
             </div>
 
-            {/* Metric Cards Grid */}
+            {/* Metric Display Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
               
-              {/* Soil Moisture Card */}
-              <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl backdrop-blur-md relative overflow-hidden group">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
-                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Soil Moisture' : 'মাটির আর্দ্রতা'}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Soil Moisture' : 'আর্দ্রতা'}</span>
                   <span className="p-2.5 bg-emerald-500/10 rounded-2xl text-emerald-400">💧</span>
                 </div>
                 <div className="mt-4">
@@ -231,16 +253,15 @@ export default function App() {
                     <span className="text-slate-500 font-bold">%</span>
                   </div>
                   <div className="w-full bg-slate-950 h-2 rounded-full mt-4 overflow-hidden border border-slate-800">
-                    <div className="bg-gradient-to-r from-emerald-500 to-teal-400 h-full transition-all duration-500" style={{ width: `${moisture}%` }}></div>
+                    <div className="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full transition-all duration-500" style={{ width: `${moisture}%` }}></div>
                   </div>
                 </div>
-                <p className="text-[10px] text-emerald-400 font-mono mt-4">✓ {lang === 'en' ? 'Optimal Root Hydration' : 'আদর্শ সেচ রেঞ্জে রয়েছে'}</p>
+                <p className="text-[10px] text-emerald-400 font-mono mt-4">✓ Optimal Root Range</p>
               </div>
 
-              {/* Temperature Card */}
-              <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 transition-all shadow-xl backdrop-blur-md">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 hover:border-amber-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
-                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Ambient Temp' : 'বাতাসের তাপমাত্রা'}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Ambient Temp' : 'তাপমাত্রা'}</span>
                   <span className="p-2.5 bg-amber-500/10 rounded-2xl text-amber-400">🌡️</span>
                 </div>
                 <div className="mt-4">
@@ -248,15 +269,14 @@ export default function App() {
                     <span className="text-4xl font-black text-amber-400 font-mono">{temp}</span>
                     <span className="text-slate-500 font-bold">°C</span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-2">{lang === 'en' ? 'Thermal Comfort Index: 92%' : 'থার্মাল সূচক: ৯২%'}</p>
+                  <p className="text-xs text-slate-400 mt-2">Thermal Score: 94%</p>
                 </div>
-                <p className="text-[10px] text-amber-400 font-mono mt-4">✓ {lang === 'en' ? 'Normal Field Temp' : 'স্বাভাবিক তাপমাত্রা'}</p>
+                <p className="text-[10px] text-amber-400 font-mono mt-4">✓ Normal Microclimate</p>
               </div>
 
-              {/* pH Rating Card */}
-              <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 transition-all shadow-xl backdrop-blur-md">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 hover:border-purple-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
-                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Soil pH Level' : 'মাটির পিএইচ (pH)'}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'Soil pH Score' : 'মাটির pH'}</span>
                   <span className="p-2.5 bg-purple-500/10 rounded-2xl text-purple-400">🧪</span>
                 </div>
                 <div className="mt-4">
@@ -264,173 +284,80 @@ export default function App() {
                     <span className="text-4xl font-black text-purple-400 font-mono">{ph}</span>
                     <span className="text-slate-500 font-bold">pH</span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-2">{lang === 'en' ? 'Nutrient Absorption: High' : 'পুষ্টি উপাদান শোষণ: উত্তম'}</p>
+                  <p className="text-xs text-slate-400 mt-2">Nutrient Absorbability: High</p>
                 </div>
-                <p className="text-[10px] text-purple-300 font-mono mt-4">{lang === 'en' ? 'Slightly Acidic (Ideal)' : 'উৎকৃষ্ট মাত্রা'}</p>
+                <p className="text-[10px] text-purple-300 font-mono mt-4">Slightly Acidic (Ideal)</p>
               </div>
 
-              {/* NPK Minerals Card */}
-              <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 transition-all shadow-xl backdrop-blur-md">
+              <div className="p-6 rounded-3xl bg-slate-900/70 border border-slate-800 hover:border-cyan-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
-                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'NPK Minerals' : 'এনপিকে উপাদান'}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{lang === 'en' ? 'NPK Spectrum' : 'এনপিকে মাত্রা'}</span>
                   <span className="p-2.5 bg-cyan-500/10 rounded-2xl text-cyan-400">🌿</span>
                 </div>
                 <div className="mt-3 space-y-1 text-xs font-mono">
-                  <div className="flex justify-between"><span className="text-slate-400">N (Nitrogen):</span><span className="font-bold text-emerald-400">{npk.n} mg/kg</span></div>
-                  <div className="flex justify-between"><span className="text-slate-400">P (Phosphorus):</span><span className="font-bold text-teal-400">{npk.p} mg/kg</span></div>
-                  <div className="flex justify-between"><span className="text-slate-400">K (Potassium):</span><span className="font-bold text-cyan-400">{npk.k} mg/kg</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Nitrogen:</span><span className="font-bold text-emerald-400">{npk.n} mg/kg</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Phosphorus:</span><span className="font-bold text-teal-400">{npk.p} mg/kg</span></div>
+                  <div className="flex justify-between"><span className="text-slate-400">Potassium:</span><span className="font-bold text-cyan-400">{npk.k} mg/kg</span></div>
                 </div>
-                <p className="text-[10px] text-cyan-400 font-mono mt-3">{lang === 'en' ? 'Fertility Score: 89/100' : 'উর্বরতা স্কোর: ৮৯/১০০'}</p>
+                <p className="text-[10px] text-cyan-400 font-mono mt-3">Fertility Score: 91/100</p>
               </div>
+
             </div>
 
-            {/* Interactive SVG Real-time Telemetry Trend Chart */}
+            {/* Dynamic Interactive SVG Graph */}
             <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl backdrop-blur-md space-y-4">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
                 <div>
                   <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-                    <span className="text-emerald-400">📈</span>
-                    <span>{lang === 'en' ? '24-Hour Soil Moisture Trend Telemetry' : '২৪ ঘণ্টার মাটির আর্দ্রতা গ্রাফ'}</span>
+                    <span className="text-cyan-400">📈</span>
+                    <span>{lang === 'en' ? 'Live Telemetry Waveform Curve' : 'লাইভ আর্দ্রতা ও তাপমাত্রা ওয়েভফর্ম'}</span>
                   </h3>
-                  <p className="text-xs text-slate-400">{lang === 'en' ? 'Real-time telemetry curve recorded by IoT sensor nodes.' : 'আইওটি সেন্সর থেকে প্রাপ্ত মাটির আর্দ্রতা লাইভ স্কেলিং।'}</p>
-                </div>
-                <div className="flex items-center space-x-4 text-xs font-mono">
-                  <span className="flex items-center space-x-1 text-emerald-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></span>
-                    <span>Moisture %</span>
-                  </span>
-                  <span className="flex items-center space-x-1 text-amber-400">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
-                    <span>Temp °C</span>
-                  </span>
+                  <p className="text-xs text-slate-400">Real-time IoT stream feeds updating continuously.</p>
                 </div>
               </div>
 
-              {/* Dynamic SVG Waveform Chart */}
-              <div className="w-full h-48 bg-slate-950/80 rounded-2xl p-4 border border-slate-800/80 relative overflow-hidden flex items-end">
+              <div className="w-full h-44 bg-slate-950/90 rounded-2xl p-4 border border-slate-800 relative overflow-hidden flex items-end">
                 <svg className="w-full h-full overflow-visible" viewBox="0 0 500 150" preserveAspectRatio="none">
-                  {/* Grid Lines */}
                   <line x1="0" y1="30" x2="500" y2="30" stroke="#1e293b" strokeDasharray="4" />
                   <line x1="0" y1="75" x2="500" y2="75" stroke="#1e293b" strokeDasharray="4" />
                   <line x1="0" y1="120" x2="500" y2="120" stroke="#1e293b" strokeDasharray="4" />
 
-                  {/* Temperature Curve */}
-                  <path
-                    d="M 0 100 Q 125 70, 250 85 T 500 65"
-                    fill="none"
-                    stroke="#f59e0b"
-                    strokeWidth="2.5"
-                    strokeDasharray="6"
-                  />
-                  {/* Moisture Curve */}
-                  <path
-                    d="M 0 60 Q 125 20, 250 45 T 500 35"
-                    fill="none"
-                    stroke="#10b981"
-                    strokeWidth="3.5"
-                  />
-                  {/* Glowing Dots */}
-                  <circle cx="500" cy="35" r="5" fill="#10b981" className="animate-pulse" />
-                  <circle cx="500" cy="65" r="4" fill="#f59e0b" />
+                  <path d="M 0 90 Q 125 60, 250 80 T 500 50" fill="none" stroke="#f59e0b" strokeWidth="2.5" strokeDasharray="6" />
+                  <path d="M 0 50 Q 125 15, 250 40 T 500 25" fill="none" stroke="#06b6d4" strokeWidth="3.5" />
+
+                  <circle cx="500" cy="25" r="5" fill="#06b6d4" className="animate-pulse" />
+                  <circle cx="500" cy="50" r="4" fill="#f59e0b" />
                 </svg>
-              </div>
-              <div className="flex justify-between text-[10px] font-mono text-slate-500 px-2">
-                <span>00:00 AM</span>
-                <span>06:00 AM</span>
-                <span>12:00 PM</span>
-                <span>06:00 PM</span>
-                <span>NOW</span>
-              </div>
-            </div>
-
-            {/* Satellite Weather Telemetry Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl space-y-4 backdrop-blur-md">
-                <div className="flex justify-between items-center">
-                  <h3 className="text-sm font-bold text-white uppercase tracking-wider flex items-center space-x-2">
-                    <span>🛰️</span>
-                    <span>{lang === 'en' ? 'Live Satellite Weather Telemetry' : 'স্যাটেলাইট আবহাওয়া তথ্য'}</span>
-                  </h3>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Open-Meteo Live API</span>
-                </div>
-
-                {weather ? (
-                  <div className="grid grid-cols-3 gap-4 p-5 rounded-2xl bg-slate-950/80 border border-slate-800 text-center">
-                    <div>
-                      <p className="text-[10px] font-mono text-slate-500 uppercase">{lang === 'en' ? 'Temperature' : 'তাপমাত্রা'}</p>
-                      <p className="text-2xl font-black text-white mt-1 font-mono">{weather.temperature}°C</p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-mono text-slate-500 uppercase">{lang === 'en' ? 'Wind Speed' : 'বাতাসের গতি'}</p>
-                      <p className="text-2xl font-black text-white mt-1 font-mono">{weather.windspeed} <span className="text-xs text-slate-500">km/h</span></p>
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-mono text-slate-500 uppercase">{lang === 'en' ? 'Weather Code' : 'ওয়েদার কোড'}</p>
-                      <p className="text-2xl font-black text-teal-400 mt-1 font-mono">#{weather.weathercode}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 text-xs text-slate-400 animate-pulse">
-                    Connecting to Satellite Telemetry Server...
-                  </div>
-                )}
-              </div>
-
-              {/* Actuator Relay Matrix */}
-              <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-xl space-y-4 backdrop-blur-md">
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">{lang === 'en' ? 'Relay Actuator Matrix' : 'রিলে সুইচ স্ট্যাটাস'}</h3>
-                <div className="space-y-3">
-                  <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex justify-between items-center">
-                    <div>
-                      <p className="text-xs font-bold text-white">{lang === 'en' ? 'Relay #2: NPK Chemical Doser' : 'রিলে ২: সার ইনজেক্টর'}</p>
-                      <p className="text-[10px] text-slate-500 font-mono">GPIO 27 • Precision Valve</p>
-                    </div>
-                    <span className="text-[10px] font-mono font-bold px-3 py-1 rounded-lg bg-slate-800 text-slate-500">
-                      IDLE
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
           </section>
         )}
-
-        {/* SECTION 2: AI DISEASE DIAGNOSTICS LAB */}
+        {/* FEATURE 3: NEURAL DISEASE LAB */}
         {(activeTab === 'all' || activeTab === 'ailab') && (
           <section className="max-w-4xl mx-auto space-y-6">
             <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
               <div>
-                <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-                  Deep Learning Vision Model
+                <span className="text-xs font-mono text-purple-400 font-bold uppercase tracking-widest bg-purple-500/10 px-3 py-1 rounded-full border border-purple-500/20">
+                  Computer Vision Diagnostics
                 </span>
                 <h2 className="text-2xl font-black text-white mt-2">
-                  {lang === 'en' ? 'AI Neural Crop Disease Scanner' : 'এআই শস্য রোগ নির্ণয় ল্যাব'}
+                  {lang === 'en' ? 'Neural Crop Leaf Disease Classifier' : 'নিউরাল রোগ নির্ণয় ল্যাব'}
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  {lang === 'en' 
-                    ? 'Upload an image of an infected leaf to execute real-time classification and localized treatment guidance.' 
-                    : 'আক্রান্ত পাতার ছবি আপলোড করে মুহূর্তেই রোগ নির্ণয় ও প্রতিকার নির্দেশনা পান।'}
-                </p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
-                <div className="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-3xl p-6 text-center bg-slate-950/60 transition-all flex flex-col items-center justify-center min-h-[220px]">
+                <div className="border-2 border-dashed border-slate-700 hover:border-cyan-500/60 rounded-3xl p-6 text-center bg-slate-950/70 transition-all flex flex-col items-center justify-center min-h-[200px]">
                   {selectedImage ? (
-                    <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-800">
+                    <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-slate-800">
                       <img src={selectedImage} alt="Crop Leaf Sample" className="w-full h-full object-cover" />
-                      <button 
-                        onClick={() => setSelectedImage(null)} 
-                        className="absolute top-2 right-2 bg-slate-900/90 text-white rounded-full p-2 text-xs hover:bg-rose-600 transition-colors"
-                      >
-                        ✕
-                      </button>
+                      <button onClick={() => setSelectedImage(null)} className="absolute top-2 right-2 bg-slate-900/90 text-white rounded-full p-2 text-xs hover:bg-rose-600">✕</button>
                     </div>
                   ) : (
                     <>
-                      <span className="text-5xl block mb-3">📸</span>
-                      <p className="text-xs text-slate-300 font-bold">{lang === 'en' ? 'Select Crop Leaf Sample' : 'আক্রান্ত পাতার ছবি সিলেক্ট করুন'}</p>
-                      <label className="mt-4 px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold text-xs rounded-xl cursor-pointer transition-all border border-slate-700">
-                        {lang === 'en' ? 'Browse Image File' : 'গ্যালারি থেকে সিলেক্ট করুন'}
+                      <span className="text-4xl block mb-2">📸</span>
+                      <p className="text-xs text-slate-300 font-bold">Upload Leaf Sample Image</p>
+                      <label className="mt-4 px-5 py-2 bg-slate-800 text-slate-200 font-bold text-xs rounded-xl cursor-pointer border border-slate-700">
+                        Browse File
                         <input type="file" accept="image/*" onChange={handleImageChange} className="hidden" />
                       </label>
                     </>
@@ -438,62 +365,36 @@ export default function App() {
                 </div>
 
                 <div className="space-y-4">
-                  <p className="text-xs font-bold text-slate-300">{lang === 'en' ? 'Or test sample dataset:' : 'অথবা নিচের টেস্ট ডেমো ছবি ব্যবহার করুন:'}</p>
+                  <p className="text-xs font-bold text-slate-300">Test Preset Datasets:</p>
                   <div className="grid grid-cols-2 gap-2">
-                    <button 
-                      onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} 
-                      className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-emerald-500/50 transition-all"
-                    >
-                      <span className="block font-bold text-xs text-white">{lang === 'en' ? 'Rice Paddy Leaf' : 'ধান পাতা'}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">Bacterial Blight</span>
+                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1592417817098-8f3d6eb231fc?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50">
+                      <span className="block font-bold text-xs text-white">Rice Leaf Sample</span>
+                      <span className="text-[9px] text-slate-500 font-mono">Bacterial Blight</span>
                     </button>
-                    <button 
-                      onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} 
-                      className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-emerald-500/50 transition-all"
-                    >
-                      <span className="block font-bold text-xs text-white">{lang === 'en' ? 'Maize Leaf' : 'ভুট্টা পাতা'}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">Common Rust</span>
+                    <button onClick={() => { setSelectedImage('https://images.unsplash.com/photo-1530836369250-ef72a3f5cda8?auto=format&fit=crop&w=600&q=80'); setAiResult(null); }} className="p-3 rounded-2xl bg-slate-950 border border-slate-800 text-left hover:border-cyan-500/50">
+                      <span className="block font-bold text-xs text-white">Corn Leaf Sample</span>
+                      <span className="text-[9px] text-slate-500 font-mono">Common Rust</span>
                     </button>
                   </div>
 
-                  <button 
-                    onClick={runAiDiagnostics} 
-                    disabled={aiLoading} 
-                    className="w-full py-4 bg-gradient-to-r from-emerald-500 via-teal-500 to-cyan-500 text-slate-950 font-black text-xs rounded-2xl shadow-xl transition-all uppercase tracking-wider hover:opacity-95"
-                  >
-                    {aiLoading ? (lang === 'en' ? 'Processing Neural Model...' : 'মডেল প্রসেসিং হচ্ছে...') : (lang === 'en' ? '🚀 Run AI Diagnostics' : '🚀 রোগ নির্ণয় করুন')}
+                  <button onClick={runAiDiagnostics} disabled={aiLoading} className="w-full py-4 bg-gradient-to-r from-emerald-500 via-cyan-500 to-purple-500 text-slate-950 font-black text-xs rounded-2xl shadow-xl uppercase tracking-wider">
+                    {aiLoading ? 'Analyzing Classifier Model...' : '🚀 Execute AI Analysis'}
                   </button>
                 </div>
               </div>
 
-              {/* AI Diagnostic Output */}
               {aiResult && (
-                <div className="p-6 rounded-2xl bg-slate-950 border border-emerald-500/50 space-y-4 animate-fadeIn">
+                <div className="p-6 rounded-2xl bg-slate-950 border border-cyan-500/50 space-y-4">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-                    <div>
-                      <span className="text-[10px] font-mono text-emerald-400 uppercase">{lang === 'en' ? 'DIAGNOSIS MATCH' : 'নির্ণীত রোগ'}</span>
-                      <h4 className="text-lg font-bold text-white mt-0.5">{aiResult.disease}</h4>
-                    </div>
-                    <span className="text-xs font-mono font-bold bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full border border-emerald-500/30">
-                      {aiResult.confidence}
-                    </span>
+                    <h4 className="text-base font-bold text-white">{aiResult.disease}</h4>
+                    <span className="text-xs font-mono font-bold bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full">{aiResult.confidence}</span>
                   </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                    <div className="p-4 bg-slate-900 rounded-xl border border-slate-800">
-                      <span className="text-slate-500 block mb-1">{lang === 'en' ? 'Severity Index:' : 'ক্ষতির মাত্রা:'}</span>
-                      <p className="font-semibold text-rose-400">{aiResult.severity}</p>
-                      <p className="text-slate-400 text-[11px] mt-1">{aiResult.yieldImpact}</p>
+                  <div className="text-xs space-y-2 text-slate-300">
+                    <p><strong className="text-rose-400">Severity:</strong> {aiResult.severity}</p>
+                    <p><strong className="text-emerald-400">Yield Value Saved:</strong> {aiResult.roiProtection}</p>
+                    <div className="p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-emerald-200">
+                      <strong>Treatment Protocol:</strong> {aiResult.treatment}
                     </div>
-                    <div className="p-4 bg-slate-900 rounded-xl border border-slate-800">
-                      <span className="text-slate-500 block mb-1">{lang === 'en' ? 'Visible Symptoms:' : 'লক্ষণসমূহ:'}</span>
-                      <p className="text-slate-300">{aiResult.symptoms}</p>
-                    </div>
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-emerald-950/30 border border-emerald-500/30 text-xs text-emerald-200">
-                    <strong className="text-emerald-400 block mb-1">{lang === 'en' ? 'Recommended Organic/Chemical Protocol:' : 'প্রস্তাবিত প্রতিকার ও সুনির্দিষ্ট ওষুধ:'}</strong>
-                    {aiResult.treatment}
                   </div>
                 </div>
               )}
@@ -501,106 +402,47 @@ export default function App() {
           </section>
         )}
 
-        {/* SECTION 3: HYDROLOGY & FLOOD RISK OUTLOOK */}
-        {(activeTab === 'all' || activeTab === 'forecast') && (
+        {/* FEATURE 4: PROFIT & YIELD FORECASTER */}
+        {(activeTab === 'all' || activeTab === 'profit') && (
           <section className="max-w-4xl mx-auto space-y-6">
             <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
               <div>
-                <span className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-widest bg-cyan-500/10 px-3 py-1 rounded-full border border-cyan-500/20">
-                  FloodGuard BD Engine
+                <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+                  Economic Predictive Engine
                 </span>
                 <h2 className="text-2xl font-black text-white mt-2">
-                  {lang === 'en' ? '15-Day Regional Flood & Rainfall Outlook' : '১৫ দিনের নদী ও আবহাওয়া বন্যা ঝুঁকি পূর্বাভাস'}
+                  {lang === 'en' ? 'Harvest Profit & Fertilizer ROI Calculator' : 'মুনাফা ও সার বাজেট ক্যালকুলেটর'}
                 </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  {lang === 'en' 
-                    ? 'ML classifier forecasting upstream river discharge for Mymensingh, Jamalpur, and Sylhet basins.' 
-                    : 'ময়মনসিংহ, জামালপুর ও সিলেট অঞ্চলের নদ-নদীর পানির প্রবাহ ভিত্তিক এআই পূর্বাভাস।'}
-                </p>
-              </div>
-
-              <div className="space-y-3">
-                {[
-                  { region: 'Mymensingh & Old Brahmaputra', day: 'Days 1 - 3', rain: '14mm', risk: 'Low Risk', color: 'text-emerald-400', status: 'Safe Field Hydration' },
-                  { region: 'Jamalpur River Basin', day: 'Days 4 - 7', rain: '68mm', risk: 'Moderate Risk', color: 'text-amber-400', status: 'Prepare Field Outlets' },
-                  { region: 'Sylhet & Haor Basin', day: 'Days 8 - 12', rain: '145mm', risk: 'High Flood Risk', color: 'text-rose-400', status: 'Upstream Discharge Alert' },
-                  { region: 'Central Region', day: 'Days 13 - 15', rain: '22mm', risk: 'Receding Water', color: 'text-cyan-400', status: 'Soil Recovery Phase' },
-                ].map((item, idx) => (
-                  <div key={idx} className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs gap-2">
-                    <div>
-                      <span className="font-bold text-white text-sm block">{item.region}</span>
-                      <span className="text-[10px] font-mono text-slate-500">{item.day} • {item.status}</span>
-                    </div>
-                    <div className="flex space-x-6 text-right font-mono">
-                      <div><span className="text-slate-500 block text-[9px]">PRECIP</span><span className="text-slate-200">{item.rain}</span></div>
-                      <div><span className="text-slate-500 block text-[9px]">STATUS</span><span className={`font-bold ${item.color}`}>{item.risk}</span></div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* SECTION 4: YIELD ROI & FERTILIZER CALCULATOR */}
-        {(activeTab === 'all' || activeTab === 'roi') && (
-          <section className="max-w-4xl mx-auto space-y-6">
-            <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
-              <div>
-                <span className="text-xs font-mono text-teal-400 font-bold uppercase tracking-widest bg-teal-500/10 px-3 py-1 rounded-full border border-teal-500/20">
-                  Precision Optimizer
-                </span>
-                <h2 className="text-2xl font-black text-white mt-2">
-                  {lang === 'en' ? 'Fertilizer Optimization & Cost Savings Calculator' : 'সার ও সাশ্রয়ী বাজেট ক্যালকুলেটর'}
-                </h2>
-                <p className="text-xs text-slate-400 mt-1">
-                  {lang === 'en' 
-                    ? 'Calculate exact chemical requirements per decimal of land using NPK real-time telemetry input.' 
-                    : 'জমির মাপ অনুযায়ী প্রয়োজনীয় ইউরিয়া, টিএসপি এবং সাশ্রয় করা অর্থ গণনা করুন।'}
-                </p>
               </div>
 
               <div className="p-6 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2">
-                      {lang === 'en' ? 'Land Size (Decimals / শতাংশ):' : 'জমির পরিমাণ (শতাংশ):'}
-                    </label>
-                    <input 
-                      type="number" 
-                      value={landSize} 
-                      onChange={(e) => setLandSize(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-white font-bold font-mono text-sm focus:border-emerald-500 outline-none"
-                    />
+                    <label className="block text-xs font-bold text-slate-300 mb-2">Land Size (Decimals / শতাংশ):</label>
+                    <input type="number" value={landSize} onChange={(e) => setLandSize(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-white font-bold font-mono text-sm outline-none focus:border-cyan-500" />
                   </div>
                   <div>
-                    <label className="block text-xs font-bold text-slate-300 mb-2">
-                      {lang === 'en' ? 'Select Target Crop:' : 'ফসলের ধরন নির্বাচন করুন:'}
-                    </label>
-                    <select 
-                      value={cropType} 
-                      onChange={(e) => setCropType(e.target.value)}
-                      className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-white font-bold text-sm focus:border-emerald-500 outline-none"
-                    >
-                      <option value="rice">{lang === 'en' ? 'Rice / Paddy (ধান)' : 'ধান (Rice)'}</option>
-                      <option value="corn">{lang === 'en' ? 'Maize / Corn (ভুট্টা)' : 'ভুট্টা (Corn)'}</option>
-                      <option value="wheat">{lang === 'en' ? 'Wheat (গম)' : 'গম (Wheat)'}</option>
+                    <label className="block text-xs font-bold text-slate-300 mb-2">Select Crop Type:</label>
+                    <select value={cropType} onChange={(e) => setCropType(e.target.value)} className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-white font-bold text-sm outline-none focus:border-cyan-500">
+                      <option value="rice">Rice / Paddy (ধান)</option>
+                      <option value="corn">Maize / Corn (ভুট্টা)</option>
+                      <option value="wheat">Wheat (গম)</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800">
-                  <div className="p-4 bg-slate-900 rounded-2xl text-center border border-slate-800">
-                    <span className="text-[10px] text-slate-500 font-mono block uppercase">Urea Requirement</span>
-                    <span className="text-2xl font-black text-emerald-400 font-mono">{(landSize * (cropType === 'rice' ? 0.45 : 0.55)).toFixed(1)} kg</span>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-4 border-t border-slate-800 text-center">
+                  <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 font-mono block uppercase">Estimated Harvest Yield</span>
+                    <span className="text-2xl font-black text-emerald-400 font-mono">{(landSize * 1.2).toFixed(1)} Maunds</span>
                   </div>
-                  <div className="p-4 bg-slate-900 rounded-2xl text-center border border-slate-800">
-                    <span className="text-[10px] text-slate-500 font-mono block uppercase">TSP Requirement</span>
-                    <span className="text-2xl font-black text-teal-400 font-mono">{(landSize * (cropType === 'rice' ? 0.22 : 0.30)).toFixed(1)} kg</span>
+                  <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 font-mono block uppercase">Gross Revenue Projection</span>
+                    <span className="text-2xl font-black text-cyan-400 font-mono">৳{(landSize * 1.2 * 1320).toFixed(0)}</span>
                   </div>
-                  <div className="p-4 bg-slate-900 rounded-2xl text-center border border-slate-800">
-                    <span className="text-[10px] text-slate-500 font-mono block uppercase">Estimated Savings</span>
-                    <span className="text-2xl font-black text-cyan-400 font-mono">৳{(landSize * 38).toFixed(0)} BDT</span>
+                  <div className="p-4 bg-slate-900 rounded-2xl border border-slate-800">
+                    <span className="text-[9px] text-slate-500 font-mono block uppercase">AI Fertilizer Savings</span>
+                    <span className="text-2xl font-black text-purple-400 font-mono">৳{(landSize * 45).toFixed(0)}</span>
                   </div>
                 </div>
               </div>
@@ -610,11 +452,11 @@ export default function App() {
 
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-900 bg-[#070c18] py-6 text-center text-xs text-slate-500 font-mono">
-        AgriNexus AI Prime Platform • Next-Gen Agriculture Telemetry
+      <footer className="border-t border-slate-900 bg-[#060a17] py-6 text-center text-xs text-slate-500 font-mono">
+        AgriNexus AI Prime v4.0 • Enterprise Autonomous Agritech Infrastructure
       </footer>
 
     </div>
   );
-                  }
+            }
+        
