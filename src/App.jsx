@@ -336,4 +336,5 @@ export default function App() {
             <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
               <div>
                 <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Computer Vision Classifier Engine</span>
-                <h2 className="text-2xl font-black text-white mt-2">{lang === 'bn' ? 'রোগ নির্ণয় ও কৃত্রিম বুদ্ধিমত্তা ল্যাব' : 'AI Cro
+                <h2 className="text-2xl font-black text-white mt-2">
+                  {lang === 'bn' ? 'রোগ নির্ণয় ও কৃত্রিম বুদ্ধিমত
