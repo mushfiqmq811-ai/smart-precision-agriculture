@@ -4,7 +4,7 @@ A mobile-first Smart Precision Agriculture web application demonstrating IoT agr
 
 ## Current Stage
 
-Step 2 — Frontend Foundation
+Step 3 — Landing Page
 
 ## Tech Stack
 

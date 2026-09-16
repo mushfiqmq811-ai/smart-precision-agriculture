@@ -4,7 +4,9 @@ function AILab() {
   return (
     <PageContainer>
       <h1 className="text-2xl font-bold text-white">AI Lab</h1>
-      <p className="mt-2 text-slate-400">AI disease detection will be implemented in Step 5.</p>
+      <p className="mt-2 text-slate-400">
+        AI disease detection will be implemented in Step 5.
+      </p>
     </PageContainer>
   );
 }

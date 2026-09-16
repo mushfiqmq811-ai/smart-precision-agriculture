@@ -4,7 +4,9 @@ function Architecture() {
   return (
     <PageContainer>
       <h1 className="text-2xl font-bold text-white">System Architecture</h1>
-      <p className="mt-2 text-slate-400">Technical architecture visualization will be implemented in Step 6.</p>
+      <p className="mt-2 text-slate-400">
+        Technical architecture visualization will be implemented in Step 6.
+      </p>
     </PageContainer>
   );
 }
