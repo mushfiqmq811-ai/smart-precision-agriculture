@@ -1,12 +1,11 @@
 # Smart Precision Agriculture
 
-Mobile-first Smart Precision Agriculture web application.
+A mobile-first Smart Precision Agriculture web application demonstrating IoT agricultural telemetry, AI-assisted plant disease detection, precision irrigation, crop recommendation, sensor analytics, system architecture, and impact/cost analysis.
 
 ## Current Stage
-Step 4 — Live Dashboard + Mock Sensor Engine
 
-## Demo Mode
-The dashboard currently uses simulated sensor data. No physical hardware or backend is required at this stage.
+Step 2 — Frontend Foundation
 
-## Tech
+## Tech Stack
+
 React + Vite + Tailwind CSS + Framer Motion + React Router + Recharts

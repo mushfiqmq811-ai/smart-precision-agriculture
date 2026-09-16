@@ -3,11 +3,12 @@ import Footer from "../components/layout/Footer";
 
 function MainLayout({ children }) {
   return (
-    <div className="min-h-screen overflow-x-hidden bg-slate-950 text-slate-100">
+    <div className="min-h-screen bg-slate-950 text-slate-100">
       <Navbar />
       <main>{children}</main>
       <Footer />
     </div>
   );
 }
+
 export default MainLayout;
