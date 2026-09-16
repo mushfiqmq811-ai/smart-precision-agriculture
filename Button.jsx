@@ -1,8 +1,16 @@
-function Button({ children, variant = "primary", className = "", ...props }) {
+function Button({
+  children,
+  variant = "primary",
+  className = "",
+  ...props
+}) {
   const variants = {
-    primary: "bg-emerald-500 text-slate-950 hover:bg-emerald-400",
-    secondary: "border border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800",
-    ghost: "text-slate-300 hover:bg-slate-800 hover:text-white",
+    primary:
+      "bg-emerald-500 text-slate-950 hover:bg-emerald-400 shadow-lg shadow-emerald-950/20",
+    secondary:
+      "border border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800",
+    ghost:
+      "text-slate-300 hover:bg-slate-800 hover:text-white",
   };
 
   return (
