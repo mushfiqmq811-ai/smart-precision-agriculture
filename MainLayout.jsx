@@ -10,5 +10,4 @@ function MainLayout({ children }) {
     </div>
   );
 }
-
 export default MainLayout;
