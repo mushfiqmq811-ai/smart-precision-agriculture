@@ -22,3 +22,46 @@ button:focus-visible, a:focus-visible { outline: 2px solid #10b981; outline-offs
   50% { opacity: 1; transform: scale(1); }
 }
 .animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+/* index.css এর একদম শেষে যোগ করুন */
+
+/* Responsive Adjustments for Mobile Screens */
+@media screen and (max-width: 768px) {
+  /* Navigation Container Fix */
+  .nav-header {
+    flex-direction: column !important;
+    gap: 10px !important;
+    padding: 10px !important;
+  }
+
+  /* Nav Tabs Scrollable Container */
+  .nav-tabs {
+    display: flex !important;
+    overflow-x: auto !important;
+    width: 100% !important;
+    white-space: nowrap !important;
+    padding-bottom: 5px !important;
+  }
+
+  .nav-tabs button {
+    flex: 0 0 auto !important;
+    font-size: 12px !important;
+    padding: 6px 10px !important;
+  }
+
+  /* Main Dashboard Layout */
+  .dashboard-container {
+    width: 100% !important;
+    padding: 10px !important;
+  }
+
+  /* Internal Cards & Grid Systems */
+  .grid-2-col, .grid-3-col {
+    grid-template-columns: 1fr !important; /* কলামের বদলে ১ সারিতে আসবে */
+  }
+
+  .card {
+    width: 100% !important;
+    margin-bottom: 15px !important;
+  }
+}
+
