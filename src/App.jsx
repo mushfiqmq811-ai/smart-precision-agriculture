@@ -1,4 +1,4 @@
-    import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function App() {
   const [lang, setLang] = useState('bn');
@@ -332,5 +332,4 @@ export default function App() {
                     <>
                       <span className="text-5xl block mb-3">📸</span>
                       <p className="text-xs text-slate-300 font-bold">{lang === 'bn' ? 'পাতার ছবি নির্বাচন করুন' : 'Select Leaf Photo'}</p>
-                      <label cla                                                             <img src={selectedImage} alt="Crop Leaf" className="w-full h-full object-cover" />
-                      
+                      <label cla
