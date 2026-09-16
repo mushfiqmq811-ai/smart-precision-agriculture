@@ -1,32 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
 export default function App() {
-  // Language & Navigation
   const [lang, setLang] = useState('bn');
   const [activeTab, setActiveTab] = useState('dashboard');
   
-  // Real-time IoT Metrics State
   const [moisture, setMoisture] = useState(48.2);
   const [temp, setTemp] = useState(28.5);
   const [ph, setPh] = useState(6.8);
   const [npk, setNpk] = useState({ n: 142, p: 58, k: 215 });
   
-  // Actuator & Relay Controls
   const [pumpActive, setPumpActive] = useState(false);
   const [autoMode, setAutoMode] = useState(true);
   const [doserActive, setDoserActive] = useState(false);
   const [weather, setWeather] = useState(null);
 
-  // AI Computer Vision Diagnostics State
   const [selectedImage, setSelectedImage] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiResult, setAiResult] = useState(null);
 
-  // Precision Calculator State
   const [landSize, setLandSize] = useState(33);
   const [cropType, setCropType] = useState('rice');
 
-  // Real-Time IoT Sensor Data Stream Simulation
   useEffect(() => {
     const interval = setInterval(() => {
       setMoisture((prev) => +(prev + (Math.random() * 1.2 - 0.6)).toFixed(1));
@@ -35,7 +29,6 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch Satellite Telemetry from Open-Meteo API
   useEffect(() => {
     fetch('https://api.open-meteo.com/v1/forecast?latitude=23.8103&longitude=90.4125&current_weather=true')
       .then((res) => res.json())
@@ -43,7 +36,6 @@ export default function App() {
       .catch(() => setWeather(null));
   }, []);
 
-  // Image Upload Handler
   const handleImageChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -52,7 +44,6 @@ export default function App() {
     }
   };
 
-  // AI Deep Learning Inference
   const runAiDiagnostics = () => {
     if (!selectedImage) {
       alert(lang === 'bn' ? "অনুগ্রহ করে আগে একটি পাতার ছবি আপলোড করুন!" : "Please upload a crop leaf image first!");
@@ -67,18 +58,10 @@ export default function App() {
         disease: lang === 'bn' ? 'ব্যাকটেরিয়াল লিফ ব্লাইট (Bacterial Leaf Blight)' : 'Bacterial Leaf Blight (Xanthomonas oryzae)',
         confidence: '98.6%',
         severity: lang === 'bn' ? 'দ্বিতীয় পর্যায় - মাঝারি সংক্রমণ ঝুঁকি' : 'Stage 2 - Moderate Infection Risk',
-        symptoms: lang === 'bn' 
-          ? 'পাতার কিনারা তরঙ্গায়িত হলুদ-কমলা হওয়া, ঢলে পড়া ও সালোকসংশ্লেষণ মারাত্মকভাবে হ্রাস।' 
-          : 'Yellow-orange wavy stripes along leaf margins, systemic wilting, reduced photosynthetic capacity.',
-        treatment: lang === 'bn' 
-          ? 'কপার হাইড্রক্সাইড (২ গ্রাম/লিটার) বা স্ট্রেপ্টোমাইসিন সালফেট স্প্রে করুন। জমিতে অতিরিক্ত পানির জলাবদ্ধতা নিয়ন্ত্রণ করুন।' 
-          : 'Apply Copper Hydroxide (2g/L water) or Streptomycin Sulfate. Control field drainage strictly.',
-        economicImpact: lang === 'bn' 
-          ? '৭২ ঘণ্টার মধ্যে ব্যবস্থা না নিলে ১৫%-২৫% ফলন হ্রাস পেতে পারে।' 
-          : 'High potential risk of 15%-25% crop yield loss within 72 hours if untreated.',
-        preventiveMeasure: lang === 'bn'
-          ? 'পরবর্তী মৌসুমে রোগপ্রতিরোধী জাত (যেমন: বিআর-২৬ বা বিআর-২৮) ব্যবহার করুন এবং নাইট্রোজেন সারের সুষম ব্যবহার নিশ্চিত করুন।'
-          : 'Plant resistant varieties in upcoming cycles and balance Nitrogen application.'
+        symptoms: lang === 'bn' ? 'পাতার কিনারা তরঙ্গায়িত হলুদ-কমলা হওয়া, ঢলে পড়া ও সালোকসংশ্লেষণ মারাত্মকভাবে হ্রাস।' : 'Yellow-orange wavy stripes along leaf margins, systemic wilting, reduced photosynthetic capacity.',
+        treatment: lang === 'bn' ? 'কপার হাইড্রক্সাইড (২ গ্রাম/লিটার) বা স্ট্রেপ্টোমাইসিন সালফেট স্প্রে করুন। জমিতে অতিরিক্ত পানির জলাবদ্ধতা নিয়ন্ত্রণ করুন।' : 'Apply Copper Hydroxide (2g/L water) or Streptomycin Sulfate. Control field drainage strictly.',
+        economicImpact: lang === 'bn' ? '৭২ ঘণ্টার মধ্যে ব্যবস্থা না নিলে ১৫%-২৫% ফলন হ্রাস পেতে পারে।' : 'High potential risk of 15%-25% crop yield loss within 72 hours if untreated.',
+        preventiveMeasure: lang === 'bn' ? 'পরবর্তী মৌসুমে রোগপ্রতিরোধী জাত (যেমন: বিআর-২৬ বা বিআর-২৮) ব্যবহার করুন এবং নাইট্রোজেন সারের সুষম ব্যবহার নিশ্চিত করুন।' : 'Plant resistant varieties in upcoming cycles and balance Nitrogen application.'
       });
     }, 2200);
   };
@@ -86,14 +69,11 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#070A13] text-slate-100 font-sans flex flex-col selection:bg-emerald-500 selection:text-black">
       
-      {/* Dynamic Background Ambient Glows */}
       <div className="fixed top-0 left-1/4 w-96 h-96 bg-emerald-600/10 rounded-full blur-[140px] pointer-events-none"></div>
       <div className="fixed bottom-0 right-1/4 w-96 h-96 bg-cyan-600/10 rounded-full blur-[140px] pointer-events-none"></div>
 
-      {/* Navigation & Header */}
       <header className="border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-xl sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
-          
           <div className="flex items-center space-x-3">
             <div className="p-2.5 bg-gradient-to-tr from-emerald-500 via-teal-500 to-cyan-500 rounded-2xl shadow-lg shadow-emerald-500/20">
               <span className="text-2xl block">🌱</span>
@@ -140,18 +120,13 @@ export default function App() {
               🌐 {lang === 'bn' ? 'English' : 'বাংলা'}
             </button>
           </div>
-
         </div>
       </header>
 
-      {/* Main Container */}
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 py-8 relative z-10">
         
-        {/* TAB 1: DASHBOARD */}
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
-            
-            {/* Sector Banner */}
             <div className="p-6 rounded-3xl bg-slate-900/80 border border-slate-800 backdrop-blur-md flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 shadow-2xl">
               <div>
                 <div className="flex items-center space-x-2">
@@ -193,10 +168,7 @@ export default function App() {
               </div>
             </div>
 
-            {/* Live Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              
-              {/* Soil Moisture */}
               <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-emerald-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
                   <span className="text-xs font-bold uppercase">{lang === 'bn' ? 'মাটির আর্দ্রতা' : 'Soil Moisture'}</span>
@@ -214,7 +186,6 @@ export default function App() {
                 <p className="text-[10px] text-emerald-400 font-mono mt-4">✓ {lang === 'bn' ? 'আদর্শ সেচ মাত্রায় আছে' : 'Optimal Hydration Level'}</p>
               </div>
 
-              {/* Ambient Temp */}
               <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-amber-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
                   <span className="text-xs font-bold uppercase">{lang === 'bn' ? 'বাতাসের তাপমাত্রা' : 'Ambient Temp'}</span>
@@ -230,7 +201,6 @@ export default function App() {
                 <p className="text-[10px] text-amber-400 font-mono mt-4">✓ {lang === 'bn' ? 'স্বাভাবিক রেঞ্জ' : 'Normal Field Range'}</p>
               </div>
 
-              {/* Soil pH */}
               <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-purple-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
                   <span className="text-xs font-bold uppercase">{lang === 'bn' ? 'মাটির পিএইচ (pH)' : 'Soil pH Rating'}</span>
@@ -246,7 +216,6 @@ export default function App() {
                 <p className="text-[10px] text-purple-300 font-mono mt-4">{lang === 'bn' ? 'হালকা এসিডিক (উৎকৃষ্ট)' : 'Slightly Acidic (Optimal)'}</p>
               </div>
 
-              {/* NPK Minerals */}
               <div className="p-6 rounded-3xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 transition-all shadow-xl backdrop-blur-md">
                 <div className="flex justify-between items-center text-slate-400">
                   <span className="text-xs font-bold uppercase">{lang === 'bn' ? 'এনপিকে খনিজ (NPK)' : 'NPK Minerals'}</span>
@@ -259,10 +228,8 @@ export default function App() {
                 </div>
                 <p className="text-[10px] text-cyan-400 font-mono mt-3">{lang === 'bn' ? 'উর্বরতা সূচক: ৮৮%' : 'Fertility Index: 88%'}</p>
               </div>
-
             </div>
 
-            {/* Satellite Weather & Actuators */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 p-6 rounded-3xl bg-slate-900/60 border border-slate-800 shadow-2xl space-y-4 backdrop-blur-md">
                 <div className="flex justify-between items-center">
@@ -326,15 +293,23 @@ export default function App() {
                 </div>
               </div>
             </div>
-
           </div>
         )}
 
-        {/* TAB 2: AI DISEASE LAB */}
         {activeTab === 'ailab' && (
           <div className="max-w-4xl mx-auto space-y-6">
             <div className="p-8 rounded-3xl bg-slate-900/80 border border-slate-800 shadow-2xl space-y-6 backdrop-blur-md">
               <div>
                 <span className="text-xs font-mono text-emerald-400 font-bold uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">Computer Vision Classifier Engine</span>
                 <h2 className="text-2xl font-black text-white mt-2">
-                  {lang === 'bn' ? 'রোগ নির্ণয় ও কৃত্রিম বুদ্ধিমত
+                  {lang === 'bn' ? 'রোগ নির্ণয় ও কৃত্রিম বুদ্ধিমত্তা ল্যাব' : 'AI Crop Disease Vision Lab'}
+                </h2>
+                <p className="text-xs text-slate-400 mt-1">{lang === 'bn' ? 'আক্রান্ত পাতার ছবি আপলোড করে ডিপ লার্নিং মডেল পরিচালনা করুন।' : 'Upload leaf sample image to run deep learning neural network classification.'}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                <div className="border-2 border-dashed border-slate-700 hover:border-emerald-500/60 rounded-3xl p-6 text-center bg-slate-950/60 transition-all flex flex-col items-center justify-center min-h-[220px]">
+                  {selectedImage ? (
+                    <div className="relative w-full h-48 rounded-2xl overflow-hidden border border-slate-800">
+                      <img src={selectedImage} alt="Crop Leaf Sample" className="w-full h-full object-cover" />
+                  
