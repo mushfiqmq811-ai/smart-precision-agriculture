@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>AgriNexus AI Prime — Precision Agriculture & Hydrological Intelligence</title>
+    <title>AgriNexus AI Prime — Hyper-Drive Agricultural Intelligence</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
     <script>
       tailwind.config = {
         theme: {
@@ -14,24 +14,39 @@
             fontFamily: {
               sans: ['Plus Jakarta Sans', 'sans-serif'],
               mono: ['JetBrains Mono', 'monospace'],
+            },
+            colors: {
+              cyber: {
+                dark: '#030712',
+                card: '#090d16',
+                accent: '#10b981',
+                neon: '#06b6d4',
+                purple: '#8b5cf6',
+                pink: '#ec4899',
+              }
             }
           }
         }
       }
     </script>
     <style>
-      @keyframes pulseGlow {
-        0%, 100% { opacity: 0.3; transform: scale(1); }
-        50% { opacity: 0.7; transform: scale(1.05); }
+      @keyframes floatGlow {
+        0%, 100% { transform: translateY(0px) scale(1); opacity: 0.4; }
+        50% { transform: translateY(-15px) scale(1.08); opacity: 0.8; }
       }
-      .animate-glow { animation: pulseGlow 5s ease-in-out infinite; }
-      ::-webkit-scrollbar { width: 6px; height: 6px; }
-      ::-webkit-scrollbar-track { background: #070c18; }
-      ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
+      @keyframes radarSweep {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      .animate-float { animation: floatGlow 6s ease-in-out infinite; }
+      .animate-radar { animation: radarSweep 4s linear infinite; transform-origin: center; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: #030712; }
+      ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 9999px; }
       ::-webkit-scrollbar-thumb:hover { background: #10b981; }
     </style>
   </head>
-  <body class="bg-[#050811] text-slate-100 antialiased selection:bg-emerald-500 selection:text-black">
+  <body class="bg-[#030712] text-slate-100 antialiased selection:bg-emerald-500 selection:text-black">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
