@@ -118,4 +118,5 @@ export default function AILab() {
 
 function treatmentPlan(text) {
   return text;
-}
+                                                              }
+                                                
